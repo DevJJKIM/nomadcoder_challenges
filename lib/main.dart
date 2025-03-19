@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,116 +8,240 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MaterialApp(theme: ThemeData.dark(), home: HomeScreen());
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 30.0,
+                    backgroundImage: AssetImage('assets/images/profile.webp'),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      print('Add Button Clicked');
+                    },
+                    icon: Icon(Icons.add, size: 40, color: Colors.white),
+                    padding: EdgeInsets.zero,
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 현재날짜 표시(MONDAY 16)
+                  Text(
+                    DateFormat('EEEE d').format(DateTime.now()).toUpperCase(),
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  SizedBox(height: 8.0),
+                  // TODAY, 주일 표시
+                  Row(
+                    children: [
+                      Text(
+                        'TODAY',
+                        style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 8.0),
+                      Icon(Icons.circle, size: 10, color: Color(0xFFB12680)),
+                      SizedBox(width: 16.0),
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 30,
+                            itemBuilder: (context, index) {
+                              final date = DateTime.now().add(
+                                Duration(days: index + 1),
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 20.0),
+                                child: Text(
+                                  DateFormat('d').format(date),
+                                  style: TextStyle(
+                                    fontSize: 35,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.0),
+                  ScheduleCard(
+                    title: 'DESIGN\nMEETING',
+                    startTime: '11:30',
+                    endTime: '12:20',
+                    color: Color(0xFFFEF655),
+                    textColor: Colors.black,
+                    members: ['ALEX', 'HELENA', 'NANA'],
+                  ),
+                  SizedBox(height: 16.0),
+                  ScheduleCard(
+                    title: 'DAILY\nPROJECT',
+                    startTime: '12:35',
+                    endTime: '14:10',
+                    color: Color(0xFF956DC8),
+                    textColor: Colors.black,
+                    members: ['ME', 'RICHARD', 'CIRY', '+4'],
+                  ),
+                  SizedBox(height: 16.0),
+                  ScheduleCard(
+                    title: 'WEEKLY\nPLANNING',
+                    startTime: '15:00',
+                    endTime: '16:30',
+                    color: Color(0xFFC6ED67),
+                    textColor: Colors.black,
+                    members: ['DEN', 'NANA', 'MARK'],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class ScheduleCard extends StatelessWidget {
+  final String title, startTime, endTime;
+  final Color color;
+  final Color textColor;
+  final List<String> members;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  const ScheduleCard({
+    super.key,
+    required this.title,
+    required this.startTime,
+    required this.endTime,
+    required this.color,
+    required this.textColor,
+    required this.members,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20.0),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 40.0,
+                child: Column(
+                  children: [
+                    Text(
+                      startTime.split(':')[0],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        height: 1.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      startTime.split(':')[1],
+                      style: TextStyle(
+                        color: Colors.black,
+                        height: 1.0,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 2),
+                      width: 1,
+                      height: 20,
+                      color: Colors.black,
+                    ),
+                    Text(
+                      endTime.split(':')[0],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        height: 1.0,
+                      ),
+                    ),
+                    Text(
+                      endTime.split(':')[1],
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        height: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 16.0),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 52,
+                  height: 0.9,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.only(left: 56.0),
+            child: Row(
+              children: [
+                ...members.map((name) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            name == 'ME'
+                                ? textColor
+                                : Colors.black.withValues(alpha: 0.5),
+                        fontWeight:
+                            name == 'ME' ? FontWeight.w600 : FontWeight.w400,
+                      ),
+                    ),
+                  );
+                }),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
