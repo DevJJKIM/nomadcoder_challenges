@@ -15,7 +15,18 @@ class MyApp extends StatelessWidget {
         child: Scaffold(
           body: Column(
             children: [
-              Row(children: [Text('POMOTIMER')]),
+              Row(
+                children: [
+                  Text(
+                    'POMOTIMER',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
